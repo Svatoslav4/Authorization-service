@@ -11,8 +11,9 @@ interface User {
 
 export class AuthService {
     private readonly users: User[] = []
-
+    private readonly jwtSecret
     
 
 
 }
+
