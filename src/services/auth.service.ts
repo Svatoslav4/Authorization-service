@@ -11,7 +11,14 @@ interface User {
 
 export class AuthService {
     private readonly users: User[] = []
-    private readonly jwtSecret
+    private readonly jwtSecret = "SECRET_KEY"
+    
+    async register(email: string, password:string){
+        const exits = this.users.find(u => u.email === email)
+        if(exits){
+            throw new Error("User already exit")
+        }
+    }
     
 
 
