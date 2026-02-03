@@ -19,8 +19,9 @@ export class AuthService {
             throw new Error("User already exit")
         }
     }
+
+    const hashedPassword = await bcrypt.hash(password,10)
     
-
-
+    
 }
 
