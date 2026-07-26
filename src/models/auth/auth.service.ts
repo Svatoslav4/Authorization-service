@@ -36,7 +36,7 @@ export class AuthService {
         const payload = await GoogleTokenVerify(token);
         if (!payload?.email) throw new Error('Google authorization failed');
 
-        // Знаходимо або створюємо
+        
         let user = await prisma.user.findUnique({ where: { email: payload.email } });
 
         if (!user) {
@@ -49,7 +49,6 @@ export class AuthService {
                 }
             });
         } else if (!user.googleId) {
-            // Оновлюємо googleId, якщо користувач зареєструвався раніше через пошту
             user = await prisma.user.update({
                 where: { id: user.id },
                 data: { googleId: payload.sub }
