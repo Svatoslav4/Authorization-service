@@ -22,7 +22,7 @@
     "sourceMap": true,
     "removeComments": true,
 
-    "types": ["node"],
+    "types": ["node", "jest"],
 
     "baseUrl": "./src",
     "paths": {
