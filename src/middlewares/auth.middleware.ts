@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import  jwt from "jsonwebtoken";
-import { AuthUser } from "../models/auth/auth.types";
+import { AuthUser } from "../types/auth.types";
 
 export const authMiddleware = (req: Request,res: Response,next: NextFunction) => { 
     const authHeader = req.headers.authorization
