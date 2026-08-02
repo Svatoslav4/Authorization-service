@@ -1,10 +1,19 @@
 # 🔐 Auth Service
 
-Modern authentication service built with **Express.js**, **TypeScript**, **Prisma**, **PostgreSQL**, **JWT**, **Google OAuth** and **Email Verification**.
+![Node.js](https://img.shields.io/badge/Node.js-22.x-green)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
+![Express.js](https://img.shields.io/badge/Express.js-Backend-black)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791)
+![JWT](https://img.shields.io/badge/JWT-Authentication-orange)
+![Google OAuth](https://img.shields.io/badge/Google-OAuth2-red)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
+Modern authentication service built with **Express.js**, **TypeScript**, **Prisma**, **PostgreSQL**, **JWT**, and **Google OAuth**.
 
 ---
 
-## 🚀 Features
+# 🚀 Features
 
 - ✅ User Registration
 - ✅ User Login
@@ -12,45 +21,44 @@ Modern authentication service built with **Express.js**, **TypeScript**, **Prism
 - ✅ Access Token
 - ✅ Refresh Token
 - ✅ Google OAuth Authentication
-- ✅ Email Verification
 - ✅ Password Hashing (bcrypt)
 - ✅ Request Validation (Zod)
 - ✅ Prisma ORM
 - ✅ PostgreSQL
 - ✅ Swagger API Documentation
 - ✅ Layered Architecture
+- ✅ Unit Testing (Jest)
 
 ---
 
-## 🛠 Tech Stack
+# 🛠 Tech Stack
 
-### Backend
+## Backend
 
 - Node.js
 - Express.js
 - TypeScript
 
-### Database
+## Database
 
 - PostgreSQL
 - Prisma ORM
 
-### Authentication
+## Authentication
 
 - JWT
 - Google OAuth 2.0
-- Email Verification
 - bcrypt
 
-### Validation
+## Validation
 
 - Zod
 
-### Documentation
+## Documentation
 
 - Swagger UI
 
-### Testing
+## Testing
 
 - Jest
 
@@ -69,37 +77,67 @@ src
 │
 ├── models
 │   ├── auth
+│   │   ├── auth.controller.ts
+│   │   ├── auth.routes.ts
+│   │   ├── auth.service.ts
+│   │   └── auth.validation.ts
+│   │
 │   └── user
+│       ├── user.controller.ts
+│       ├── user.repository.ts
+│       ├── user.routes.ts
+│       └── user.service.ts
 │
 ├── prisma
 │   └── client.ts
 │
 ├── types
+│   ├── auth.types.ts
+│   └── index.d.ts
 │
 ├── utils
 │   ├── bcrypt.ts
 │   ├── google.ts
-│   ├── jwt.ts
-│   └── mail.service.ts
+│   └── jwt.ts
 │
 ├── app.ts
 └── server.ts
+│
+tests
+│
+├── auth
+│   ├── auth.controller.test.ts
+│   ├── auth.middleware.test.ts
+│   ├── auth.routes.test.ts
+│   ├── auth.service.test.ts
+│   └── auth.validation.test.ts
+│
+├── user
+│   ├── user.controller.test.ts
+│   ├── user.repository.test.ts
+│   ├── user.routes.test.ts
+│   └── user.service.test.ts
+│
+└── utils
+    ├── bcrypt.test.ts
+    ├── google.test.ts
+    └── jwt.test.ts
 ```
 
 ---
 
 # ⚙ Installation
 
-Clone repository
+Clone the repository
 
 ```bash
-git clone https://github.com/your-username/auth-service.git
+git clone https://github.com/Svatoslav4/AuthService.git
 ```
 
-Go to project
+Go to the project
 
 ```bash
-cd auth-service
+cd AuthService
 ```
 
 Install dependencies
@@ -112,7 +150,7 @@ npm install
 
 # 🔧 Environment Variables
 
-Create `.env`
+Create a `.env` file
 
 ```env
 DATABASE_URL="postgresql://username:password@localhost:5432/authservice"
@@ -167,11 +205,33 @@ npx prisma studio
 
 ---
 
+# 🧪 Testing
+
+Run all tests
+
+```bash
+npm test
+```
+
+Run tests in watch mode
+
+```bash
+npm run test:watch
+```
+
+Generate test coverage
+
+```bash
+npm run test:coverage
+```
+
+---
+
 # 📖 API Documentation
 
-Swagger
+After starting the server, Swagger is available at:
 
-```
+```text
 http://localhost:5000/docs
 ```
 
@@ -180,11 +240,10 @@ http://localhost:5000/docs
 # 🔑 Authentication Flow
 
 1. Register
-2. Verify Email
-3. Login
-4. Receive Access Token
-5. Access Protected Routes
-6. Google Login
+2. Login
+3. Receive JWT Access Token
+4. Access Protected Routes
+5. Authenticate with Google OAuth
 
 ---
 
@@ -194,10 +253,9 @@ http://localhost:5000/docs
 
 | Method | Endpoint | Description |
 |---------|----------|-------------|
-| POST | /auth/register | Register |
-| POST | /auth/login | Login |
-| POST | /auth/google | Google Login |
-| GET | /auth/verify-email | Verify Email |
+| POST | `/auth/register` | Register User |
+| POST | `/auth/login` | Login |
+| POST | `/auth/google` | Google Authentication |
 
 ---
 
@@ -205,43 +263,57 @@ http://localhost:5000/docs
 
 | Method | Endpoint | Description |
 |---------|----------|-------------|
-| GET | /users/me | Current User |
+| GET | `/users/me` | Get Current User |
 
 ---
 
 # 🔒 Security
 
 - JWT Authentication
-- Password Hashing
-- Google OAuth
-- Email Verification
+- Password Hashing with bcrypt
+- Google OAuth 2.0
 - Zod Validation
 - Protected Routes
 
 ---
 
-# 📸 Screenshots
+# 📸 Swagger Screenshots
 
-Swagger
+## Authentication Endpoints
 
-```
-<img width="1472" height="741" alt="image" src="https://github.com/user-attachments/assets/3576860e-48bb-460d-a94f-fcaeab73aef4" />
-<img width="1432" height="637" alt="image" src="https://github.com/user-attachments/assets/2634a66a-3a21-49a9-8e3a-3041ff169387" />
-<img width="1429" height="675" alt="image" src="https://github.com/user-attachments/assets/8eb12b8a-e5cc-45ce-8661-2f46d8806995" />
+<img width="1472" alt="Authentication Endpoints" src="https://github.com/user-attachments/assets/3576860e-48bb-460d-a94f-fcaeab73aef4"/>
+
+---
+
+## Google Authentication
+
+<img width="1432" alt="Google Authentication" src="https://github.com/user-attachments/assets/2634a66a-3a21-49a9-8e3a-3041ff169387"/>
+
+---
+
+## User Endpoints
+
+<img width="1429" alt="User Endpoints" src="https://github.com/user-attachments/assets/8eb12b8a-e5cc-45ce-8661-2f46d8806995"/>
+
 ---
 
 # 👨‍💻 Author
 
 **Svyat Sakati**
 
-GitHub
+- **GitHub:** https://github.com/Svatoslav4
+- **LinkedIn:** https://www.linkedin.com/in/sviatoslav-kushey-34388734a/
 
-```
-[https://github.com/your-github](https://github.com/Svatoslav4)
-```
+---
 
-LinkedIn
+# ⭐ Future Improvements
+- Password Reset
+- Redis Cache
+- Docker
+- CI/CD (GitHub Actions)
 
-```
-[https://linkedin.com/in/your-profile](https://www.linkedin.com/in/sviatoslav-kushey-34388734a/)
-```
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
