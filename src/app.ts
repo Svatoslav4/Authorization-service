@@ -4,8 +4,11 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
 import authRoutes from "./models/auth/auth.routes";
 import userRoutes from "./models/user/user.routes";
+import helmet from "helmet";
+
 const app = express();
 
+app.use(helmet())
 app.use(cors());
 app.use(express.json());
 
