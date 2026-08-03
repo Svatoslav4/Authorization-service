@@ -1,6 +1,6 @@
 import { prisma } from "../../prisma/client";
 import { hashPassword, comparePassword } from "../../utils/bcrypt";
-import {generateAccessToken,generateRefreshToken} from "../../utils/jwt";
+import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import { GoogleTokenVerify } from "../../utils/google";
 
 export class AuthService {
@@ -8,9 +8,7 @@ export class AuthService {
     async register(email: string, password: string, name: string) {
 
         const existingUser = await prisma.user.findUnique({
-            where: {
-                email
-            }
+            where: { email }
         });
 
         if (existingUser) {
@@ -30,12 +28,14 @@ export class AuthService {
         const accessToken = generateAccessToken(user.id);
         const refreshToken = generateRefreshToken(user.id);
 
+        const hashedRefreshToken = await hashPassword(refreshToken);
+
         await prisma.user.update({
             where: {
                 id: user.id
             },
             data: {
-                refreshToken
+                refreshToken: hashedRefreshToken
             }
         });
 
@@ -49,9 +49,7 @@ export class AuthService {
     async login(email: string, password: string) {
 
         const user = await prisma.user.findUnique({
-            where: {
-                email
-            }
+            where: { email }
         });
 
         if (!user || !user.password) {
@@ -70,12 +68,14 @@ export class AuthService {
         const accessToken = generateAccessToken(user.id);
         const refreshToken = generateRefreshToken(user.id);
 
+        const hashedRefreshToken = await hashPassword(refreshToken);
+
         await prisma.user.update({
             where: {
                 id: user.id
             },
             data: {
-                refreshToken
+                refreshToken: hashedRefreshToken
             }
         });
 
@@ -90,31 +90,15 @@ export class AuthService {
 
         const payload = await GoogleTokenVerify(token);
 
-        if (!payload) {
+        if (!payload?.email) {
             throw new Error("Google authorization failed");
-        }
-
-        if (!payload.email) {
-            throw new Error("Google email not found");
-        }
-
-        if (!payload.sub) {
-            throw new Error("Google ID not found");
-        }
-
-        if ("email_verified" in payload && !payload.email_verified) {
-            throw new Error("Google email is not verified");
         }
 
         let user = await prisma.user.findFirst({
             where: {
                 OR: [
-                    {
-                        googleId: payload.sub
-                    },
-                    {
-                        email: payload.email
-                    }
+                    { email: payload.email },
+                    { googleId: payload.sub }
                 ]
             }
         });
@@ -130,7 +114,7 @@ export class AuthService {
                 }
             });
 
-        } else {
+        } else if (!user.googleId) {
 
             user = await prisma.user.update({
                 where: {
@@ -138,8 +122,8 @@ export class AuthService {
                 },
                 data: {
                     googleId: payload.sub,
-                    name: payload.name || user.name,
-                    avatar: payload.picture || user.avatar
+                    avatar: payload.picture ?? user.avatar,
+                    name: payload.name ?? user.name
                 }
             });
 
@@ -148,12 +132,14 @@ export class AuthService {
         const accessToken = generateAccessToken(user.id);
         const refreshToken = generateRefreshToken(user.id);
 
+        const hashedRefreshToken = await hashPassword(refreshToken);
+
         await prisma.user.update({
             where: {
                 id: user.id
             },
             data: {
-                refreshToken
+                refreshToken: hashedRefreshToken
             }
         });
 
@@ -161,6 +147,22 @@ export class AuthService {
             user,
             accessToken,
             refreshToken
+        };
+    }
+
+    async logout(userId: string) {
+
+        await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                refreshToken: null
+            }
+        });
+
+        return {
+            message: "Logged out successfully"
         };
     }
 }
