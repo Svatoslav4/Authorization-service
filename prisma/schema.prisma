@@ -23,12 +23,18 @@ model User {
   name String?
 
   avatar String?
-  
+
   googleId String? @unique
 
   role Role @default(User)
 
+  emailVerified Boolean @default(false)
+
+  emailVerifyToken String?
+
+  emailVerifyExpires DateTime?
+
   refreshToken String?
 
-  createdAT DateTime @default(now())
+  createdAt DateTime @default(now())
 }
