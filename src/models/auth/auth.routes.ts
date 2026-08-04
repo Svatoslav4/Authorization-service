@@ -102,4 +102,38 @@ router.post("/google", controller.google.bind(controller));
  */
 router.post("/logout",authMiddleware,controller.logout.bind(controller));
 
+/**
+ * @swagger
+ * /auth/change-password:
+ *   patch:
+ *     tags:
+ *       - Authentication
+ *     summary: Change Password
+ *     description: Change the current user's password. Requires JWT authentication.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ChangePasswordDto'
+ *     responses:
+ *       200:
+ *         description: Password changed successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Password changed successfully. Please login again.
+ *       400:
+ *         description: Validation error or current password is incorrect.
+ *       401:
+ *         description: Unauthorized.
+ */
+router.patch("/change-password",authMiddleware,controller.changePassword.bind(controller));
+
 export default router;

@@ -10,3 +10,8 @@ export const loginSchema = z.object({
     email: z.string().email(),
     password: z.string().min(6)
 })
+
+export const changePassword = z.object({
+    currentPassword: z.string().min(8),
+    newPassword: z.string().min(8)
+})

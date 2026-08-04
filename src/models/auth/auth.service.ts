@@ -1,14 +1,41 @@
 import { prisma } from "../../prisma/client";
-import { hashPassword, comparePassword } from "../../utils/bcrypt";
-import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
+import { User } from "@prisma/client";
+import { comparePassword, hashPassword } from "../../utils/bcrypt";
 import { GoogleTokenVerify } from "../../utils/google";
+import {generateAccessToken,generateRefreshToken} from "../../utils/jwt";
 
 export class AuthService {
 
-    async register(email: string, password: string, name: string) {
+    private async createTokens(userId: string) {
+        const accessToken = generateAccessToken(userId);
+        const refreshToken = generateRefreshToken(userId);
+
+        const hashedRefreshToken = await hashPassword(refreshToken);
+
+        await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                refreshToken: hashedRefreshToken
+            }
+        });
+
+        return {accessToken,refreshToken};
+    }
+
+    private sanitizeUser(user: User) {
+        const {password,refreshToken,...safeUser} = user;
+
+        return safeUser;
+    }
+
+    async register(email: string,password: string,name: string) {
 
         const existingUser = await prisma.user.findUnique({
-            where: { email }
+            where: {
+                email
+            }
         });
 
         if (existingUser) {
@@ -25,80 +52,54 @@ export class AuthService {
             }
         });
 
-        const accessToken = generateAccessToken(user.id);
-        const refreshToken = generateRefreshToken(user.id);
+        const tokens = await this.createTokens(user.id);
 
-        const hashedRefreshToken = await hashPassword(refreshToken);
-
-        await prisma.user.update({
-            where: {
-                id: user.id
-            },
-            data: {
-                refreshToken: hashedRefreshToken
-            }
-        });
-
-        return {
-            user,
-            accessToken,
-            refreshToken
-        };
+        return {user: this.sanitizeUser(user),...tokens};
     }
 
-    async login(email: string, password: string) {
+    async login(email: string,password: string) {
 
         const user = await prisma.user.findUnique({
-            where: { email }
+            where: {
+                email
+            }
         });
 
         if (!user || !user.password) {
             throw new Error("Invalid credentials");
         }
 
-        const validPassword = await comparePassword(
+        const isPasswordValid = await comparePassword(
             password,
             user.password
         );
 
-        if (!validPassword) {
+        if (!isPasswordValid) {
             throw new Error("Invalid credentials");
         }
 
-        const accessToken = generateAccessToken(user.id);
-        const refreshToken = generateRefreshToken(user.id);
+        const tokens = await this.createTokens(user.id);
 
-        const hashedRefreshToken = await hashPassword(refreshToken);
-
-        await prisma.user.update({
-            where: {
-                id: user.id
-            },
-            data: {
-                refreshToken: hashedRefreshToken
-            }
-        });
-
-        return {
-            user,
-            accessToken,
-            refreshToken
-        };
+        return {user: this.sanitizeUser(user),...tokens};
     }
 
     async googleAuth(token: string) {
 
         const payload = await GoogleTokenVerify(token);
 
-        if (!payload?.email) {
+        if (!payload?.email || !payload.sub) {
             throw new Error("Google authorization failed");
         }
 
         let user = await prisma.user.findFirst({
             where: {
                 OR: [
-                    { email: payload.email },
-                    { googleId: payload.sub }
+                    {
+                        email: payload.email
+                    },
+                    {
+                        googleId: payload.sub
+                    }
                 ]
             }
         });
@@ -108,7 +109,7 @@ export class AuthService {
             user = await prisma.user.create({
                 data: {
                     email: payload.email,
-                    name: payload.name || "User",
+                    name: payload.name ?? "User",
                     avatar: payload.picture,
                     googleId: payload.sub
                 }
@@ -122,31 +123,17 @@ export class AuthService {
                 },
                 data: {
                     googleId: payload.sub,
-                    avatar: payload.picture ?? user.avatar,
-                    name: payload.name ?? user.name
+                    name: payload.name ?? user.name,
+                    avatar: payload.picture ?? user.avatar
                 }
             });
-
         }
 
-        const accessToken = generateAccessToken(user.id);
-        const refreshToken = generateRefreshToken(user.id);
-
-        const hashedRefreshToken = await hashPassword(refreshToken);
-
-        await prisma.user.update({
-            where: {
-                id: user.id
-            },
-            data: {
-                refreshToken: hashedRefreshToken
-            }
-        });
+        const tokens = await this.createTokens(user.id);
 
         return {
-            user,
-            accessToken,
-            refreshToken
+            user: this.sanitizeUser(user),
+            ...tokens
         };
     }
 
@@ -163,6 +150,41 @@ export class AuthService {
 
         return {
             message: "Logged out successfully"
+        };
+    }
+
+    async changePassword(userId: string,currentPassword: string,newPassword: string) {
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId
+            }
+        });
+
+        if (!user || !user.password) {
+            throw new Error("User not found");
+        }
+
+        const isPasswordValid = await comparePassword(currentPassword,user.password);
+
+        if (!isPasswordValid) {
+            throw new Error("Current password is incorrect");
+        }
+
+        const hashedPassword = await hashPassword(newPassword);
+
+        await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                password: hashedPassword,
+                refreshToken: null
+            }
+        });
+
+        return {
+            message: "Password changed successfully. Please login again."
         };
     }
 }

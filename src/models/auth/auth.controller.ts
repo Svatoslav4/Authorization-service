@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
-import { registerSchema, loginSchema } from "./auth.validation";
+import {registerSchema,loginSchema,changePassword} from "./auth.validation";
 
 const authService = new AuthService();
 
@@ -11,13 +11,13 @@ export class AuthController {
 
             const body = registerSchema.parse(req.body);
 
-            const user = await authService.register(
+            const result = await authService.register(
                 body.email,
                 body.password,
                 body.name
             );
 
-            return res.status(201).json(user);
+            return res.status(201).json(result);
 
         } catch (error: unknown) {
 
@@ -38,12 +38,12 @@ export class AuthController {
 
             const body = loginSchema.parse(req.body);
 
-            const data = await authService.login(
+            const result = await authService.login(
                 body.email,
                 body.password
             );
 
-            return res.status(200).json(data);
+            return res.status(200).json(result);
 
         } catch (error: unknown) {
 
@@ -70,9 +70,9 @@ export class AuthController {
                 });
             }
 
-            const data = await authService.googleAuth(token);
+            const result = await authService.googleAuth(token);
 
-            return res.status(200).json(data);
+            return res.status(200).json(result);
 
         } catch (error: unknown) {
 
@@ -91,7 +91,7 @@ export class AuthController {
     async logout(req: Request, res: Response) {
         try {
 
-            const user = req.user;
+            const user = (req as any).user;
 
             const result = await authService.logout(user.userId);
 
@@ -107,6 +107,35 @@ export class AuthController {
 
             return res.status(500).json({
                 message: "Logout failed"
+            });
+        }
+    }
+
+    async changePassword(req: Request, res: Response) {
+        try {
+
+            const body = changePassword.parse(req.body);
+
+            const user = (req as any).user;
+
+            const result = await authService.changePassword(
+                user.userId,
+                body.currentPassword,
+                body.newPassword
+            );
+
+            return res.status(200).json(result);
+
+        } catch (error: unknown) {
+
+            if (error instanceof Error) {
+                return res.status(400).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({
+                message: "Password change failed"
             });
         }
     }
