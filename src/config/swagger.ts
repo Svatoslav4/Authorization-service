@@ -103,25 +103,45 @@ export const swaggerSpec = swaggerJsdoc({
                     }
                 },
 
+                ChangePasswordDto: {
+                    type: "object",
+                    required: ["currentPassword", "newPassword"],
+                    properties: {
+                        currentPassword: {
+                            type: "string",
+                            example: "OldPassword123"
+                        },
+                        newPassword: {
+                            type: "string",
+                            example: "NewPassword123"
+                        }
+                    }
+                },
+
                 User: {
                     type: "object",
                     properties: {
                         id: {
-                            type: "string"
+                            type: "string",
+                            example: "cmabc123456"
                         },
                         email: {
-                            type: "string"
+                            type: "string",
+                            example: "john@gmail.com"
                         },
                         name: {
-                            type: "string"
+                            type: "string",
+                            example: "John Doe"
                         },
                         avatar: {
                             type: "string",
-                            nullable: true
+                            nullable: true,
+                            example: "https://example.com/avatar.png"
                         },
                         googleId: {
                             type: "string",
-                            nullable: true
+                            nullable: true,
+                            example: "109876543210987654321"
                         },
                         role: {
                             type: "string",
@@ -137,10 +157,12 @@ export const swaggerSpec = swaggerJsdoc({
                             $ref: "#/components/schemas/User"
                         },
                         accessToken: {
-                            type: "string"
+                            type: "string",
+                            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                         },
                         refreshToken: {
-                            type: "string"
+                            type: "string",
+                            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                         }
                     }
                 },
@@ -151,6 +173,16 @@ export const swaggerSpec = swaggerJsdoc({
                         message: {
                             type: "string",
                             example: "Success"
+                        }
+                    }
+                },
+
+                ChangePasswordResponse: {
+                    type: "object",
+                    properties: {
+                        message: {
+                            type: "string",
+                            example: "Password changed successfully. Please login again."
                         }
                     }
                 },
