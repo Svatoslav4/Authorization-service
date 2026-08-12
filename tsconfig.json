@@ -5,6 +5,7 @@
     "moduleResolution": "bundler",
     "ignoreDeprecations": "6.0",
 
+    "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "./dist",
 

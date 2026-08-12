@@ -2,10 +2,10 @@ module.exports = {
     preset: "ts-jest",
     testEnvironment: "node",
 
-    roots: ["<rootDir>/src/tests"],
-
+    rootDir: ".",
+    
     testMatch: [
-        "**/*.test.ts"
+        "<rootDir>/src/**/*.test.ts"
     ],
 
     testPathIgnorePatterns: [
@@ -15,5 +15,20 @@ module.exports = {
 
     moduleNameMapper: {
         "^@/(.*)$": "<rootDir>/src/$1"
+    },
+
+    transform: {
+        "^.+\\.tsx?$": [
+            "ts-jest",
+            {
+                tsconfig: {
+                    baseUrl: ".",
+                    rootDir: ".",
+                    paths: {
+                        "@/*": ["./src/*"]
+                    }
+                }
+            }
+        ]
     }
 };
