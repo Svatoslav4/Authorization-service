@@ -1,9 +1,13 @@
 import { UserRepository } from "./user.repository";
 
-const repository = new UserRepository()
-
 export class UserService {
+    private repository: UserRepository;
+
+    constructor(repository?: UserRepository) {
+        this.repository = repository || new UserRepository();
+    }
+
     async getUsers() {
-        return repository.getAllUsers()
+        return this.repository.getAllUsers();
     }
 }
