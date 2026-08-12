@@ -1,34 +1,33 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "CommonJS",
+    "module": "commonjs",
+    "moduleResolution": "bundler",
+    "ignoreDeprecations": "6.0",
 
     "rootDir": "./src",
     "outDir": "./dist",
 
-    "strict": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
 
-    "ignoreDeprecations": "6.0",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
 
-    "moduleResolution": "node",
-
-    "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "skipLibCheck": true,
 
-    "resolveJsonModule": true,
-
-    "sourceMap": true,
-    "removeComments": true,
-
-    "types": ["node", "jest"],
-
-    "baseUrl": "./src",
-    "paths": {
-      "@/*": ["*"]
-    }
+    "types": ["node", "jest"]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts"
+  ],
+
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
