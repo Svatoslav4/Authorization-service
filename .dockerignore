@@ -6,5 +6,5 @@ dist
 .env.*
 coverage
 npm-debug.log
-Dockerfile
-docker-compose.yml
+Dockerfile*
+docker-compose*.yml

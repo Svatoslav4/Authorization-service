@@ -1,8 +1,35 @@
 services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: authservice-app
+
+    ports:
+      - "5000:5000"
+
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/authservice
+
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    restart: unless-stopped
+
+
   postgres:
     image: postgres:17-alpine
+
     container_name: authservice-postgres
-    restart: unless-stopped
 
     environment:
       POSTGRES_USER: postgres
@@ -15,27 +42,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d authservice"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-    container_name: authservice-app
     restart: unless-stopped
 
-    ports:
-      - "5000:5000"
-
-    environment:
-      NODE_ENV: production
-
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/authservice
-
-      JWT_ACCESS_SECRET: your_access_secret
-      JWT_REFRESH_SECRET: your_refresh_secret
-
-    depends_on:
-      - postgres
 
 volumes:
   postgres_data:
