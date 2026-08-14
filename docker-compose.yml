@@ -12,7 +12,10 @@ services:
 
     environment:
       NODE_ENV: production
+
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/authservice
+
+      REDIS_URL: redis://redis:6379
 
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
@@ -21,6 +24,9 @@ services:
 
     depends_on:
       postgres:
+        condition: service_healthy
+
+      redis:
         condition: service_healthy
 
     restart: unless-stopped
@@ -51,5 +57,26 @@ services:
     restart: unless-stopped
 
 
+  redis:
+    image: redis:7-alpine
+
+    container_name: authservice-redis
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis_data:/data
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+    restart: unless-stopped
+
+
 volumes:
   postgres_data:
+  redis_data:
