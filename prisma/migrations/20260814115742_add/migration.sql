@@ -10,8 +10,11 @@ CREATE TABLE "User" (
     "avatar" TEXT,
     "googleId" TEXT,
     "role" "Role" NOT NULL DEFAULT 'User',
+    "emailVerified" BOOLEAN NOT NULL DEFAULT false,
+    "emailVerifyToken" TEXT,
+    "emailVerifyExpires" TIMESTAMP(3),
     "refreshToken" TEXT,
-    "createdAT" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
