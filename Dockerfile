@@ -1,32 +1,44 @@
-FROM node:22-alpine3.20 AS builder
+FROM node:22-alpine3.20 AS deps
+
 WORKDIR /app
+
+RUN apk update && apk upgrade --no-cache
+
 COPY package*.json ./
 
-RUN apk update && apk upgrade --no-cache && rm -rf /var/cache/apk/*
 RUN npm ci
 
-COPY prisma ./prisma
-RUN npx prisma generate
 
-COPY tsconfig.json ./
-COPY src ./src
+FROM node:22-alpine3.20 AS builder
 
-RUN npm run build
-
-FROM node:22-alpine3.20 AS production
 WORKDIR /app
-ENV NODE_ENV=production
 
+RUN apk update && apk upgrade --no-cache
+
+COPY --from=deps /app/node_modules ./node_modules
 COPY package*.json ./
 
-RUN apk update && apk upgrade --no-cache && rm -rf /var/cache/apk/*
-RUN npm ci --omit=dev
+COPY prisma ./prisma
+COPY src ./src
+COPY tsconfig.json ./
 
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+RUN npx prisma generate
+RUN npm run build
+
+
+FROM node:22-alpine3.20 AS production
+
+WORKDIR /app
+
+RUN apk update && apk upgrade --no-cache
+
+ENV NODE_ENV=production
+
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
+COPY package*.json ./
 
 EXPOSE 5000
 
-CMD ["node", "dist/server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
