@@ -1,4 +1,5 @@
 import swaggerJsdoc from "swagger-jsdoc";
+import path from "path";
 
 export const swaggerSpec = swaggerJsdoc({
     definition: {
@@ -8,14 +9,25 @@ export const swaggerSpec = swaggerJsdoc({
             title: "Auth Service API",
             version: "1.0.0",
             description:
-                "REST API built with Express.js, TypeScript, Prisma, PostgreSQL, JWT Authentication and Google OAuth."
+                "REST API built with Express.js, TypeScript, Prisma, PostgreSQL, Redis, JWT Authentication and Google OAuth.",
         },
 
         servers: [
             {
                 url: "http://localhost:5000",
-                description: "Development Server"
-            }
+                description: "Development Server",
+            },
+        ],
+
+        tags: [
+            {
+                name: "Authentication",
+                description: "Authentication and authorization endpoints",
+            },
+            {
+                name: "Users",
+                description: "User management endpoints",
+            },
         ],
 
         components: {
@@ -23,11 +35,15 @@ export const swaggerSpec = swaggerJsdoc({
                 bearerAuth: {
                     type: "http",
                     scheme: "bearer",
-                    bearerFormat: "JWT"
-                }
+                    bearerFormat: "JWT",
+                    description: "Enter JWT access token",
+                },
             },
 
             schemas: {
+                // =========================
+                // AUTH DTOs
+                // =========================
 
                 RegisterDto: {
                     type: "object",
@@ -36,17 +52,19 @@ export const swaggerSpec = swaggerJsdoc({
                         email: {
                             type: "string",
                             format: "email",
-                            example: "john@gmail.com"
+                            example: "john@gmail.com",
                         },
                         password: {
                             type: "string",
-                            example: "Password123"
+                            format: "password",
+                            minLength: 6,
+                            example: "Password123",
                         },
                         name: {
                             type: "string",
-                            example: "John Doe"
-                        }
-                    }
+                            example: "John Doe",
+                        },
+                    },
                 },
 
                 LoginDto: {
@@ -56,13 +74,14 @@ export const swaggerSpec = swaggerJsdoc({
                         email: {
                             type: "string",
                             format: "email",
-                            example: "john@gmail.com"
+                            example: "john@gmail.com",
                         },
                         password: {
                             type: "string",
-                            example: "Password123"
-                        }
-                    }
+                            format: "password",
+                            example: "Password123",
+                        },
+                    },
                 },
 
                 GoogleDto: {
@@ -71,9 +90,28 @@ export const swaggerSpec = swaggerJsdoc({
                     properties: {
                         token: {
                             type: "string",
-                            example: "eyJhbGciOiJSUzI1NiIsImtpZCI6..."
-                        }
-                    }
+                            description: "Google ID Token",
+                            example: "eyJhbGciOiJSUzI1NiIsImtpZCI6...",
+                        },
+                    },
+                },
+
+                ChangePasswordDto: {
+                    type: "object",
+                    required: ["currentPassword", "newPassword"],
+                    properties: {
+                        currentPassword: {
+                            type: "string",
+                            format: "password",
+                            example: "OldPassword123",
+                        },
+                        newPassword: {
+                            type: "string",
+                            format: "password",
+                            minLength: 6,
+                            example: "NewPassword123",
+                        },
+                    },
                 },
 
                 ForgotPasswordDto: {
@@ -83,9 +121,9 @@ export const swaggerSpec = swaggerJsdoc({
                         email: {
                             type: "string",
                             format: "email",
-                            example: "john@gmail.com"
-                        }
-                    }
+                            example: "john@gmail.com",
+                        },
+                    },
                 },
 
                 ResetPasswordDto: {
@@ -94,77 +132,84 @@ export const swaggerSpec = swaggerJsdoc({
                     properties: {
                         token: {
                             type: "string",
-                            example: "reset_token"
+                            example: "reset_token",
                         },
                         password: {
                             type: "string",
-                            example: "NewPassword123"
-                        }
-                    }
+                            format: "password",
+                            example: "NewPassword123",
+                        },
+                    },
                 },
 
-                ChangePasswordDto: {
-                    type: "object",
-                    required: ["currentPassword", "newPassword"],
-                    properties: {
-                        currentPassword: {
-                            type: "string",
-                            example: "OldPassword123"
-                        },
-                        newPassword: {
-                            type: "string",
-                            example: "NewPassword123"
-                        }
-                    }
-                },
+                // =========================
+                // USER
+                // =========================
 
                 User: {
                     type: "object",
                     properties: {
                         id: {
                             type: "string",
-                            example: "cmabc123456"
+                            example: "cmabc123456",
                         },
                         email: {
                             type: "string",
-                            example: "john@gmail.com"
+                            format: "email",
+                            example: "john@gmail.com",
                         },
                         name: {
                             type: "string",
-                            example: "John Doe"
+                            example: "John Doe",
                         },
                         avatar: {
                             type: "string",
                             nullable: true,
-                            example: "https://example.com/avatar.png"
+                            example: "https://example.com/avatar.png",
                         },
                         googleId: {
                             type: "string",
                             nullable: true,
-                            example: "109876543210987654321"
+                            example: "109876543210987654321",
                         },
                         role: {
                             type: "string",
-                            example: "User"
-                        }
-                    }
+                            enum: ["User", "Admin"],
+                            example: "User",
+                        },
+                        emailVerified: {
+                            type: "boolean",
+                            example: true,
+                        },
+                        createdAt: {
+                            type: "string",
+                            format: "date-time",
+                            example: "2026-08-15T10:00:00.000Z",
+                        },
+                    },
                 },
+
+                // =========================
+                // RESPONSES
+                // =========================
 
                 AuthResponse: {
                     type: "object",
                     properties: {
                         user: {
-                            $ref: "#/components/schemas/User"
+                            $ref: "#/components/schemas/User",
                         },
                         accessToken: {
                             type: "string",
-                            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                            example:
+                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                         },
                         refreshToken: {
                             type: "string",
-                            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                        }
-                    }
+                            example:
+                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                        },
+                    },
                 },
 
                 MessageResponse: {
@@ -172,9 +217,9 @@ export const swaggerSpec = swaggerJsdoc({
                     properties: {
                         message: {
                             type: "string",
-                            example: "Success"
-                        }
-                    }
+                            example: "Success",
+                        },
+                    },
                 },
 
                 ChangePasswordResponse: {
@@ -182,9 +227,10 @@ export const swaggerSpec = swaggerJsdoc({
                     properties: {
                         message: {
                             type: "string",
-                            example: "Password changed successfully. Please login again."
-                        }
-                    }
+                            example:
+                                "Password changed successfully. Please login again.",
+                        },
+                    },
                 },
 
                 ErrorResponse: {
@@ -192,21 +238,48 @@ export const swaggerSpec = swaggerJsdoc({
                     properties: {
                         message: {
                             type: "string",
-                            example: "Invalid credentials"
-                        }
-                    }
-                }
-            }
+                            example: "Invalid credentials",
+                        },
+                    },
+                },
+
+                // =========================
+                // USER RESPONSES
+                // =========================
+
+                UserResponse: {
+                    type: "object",
+                    properties: {
+                        user: {
+                            $ref: "#/components/schemas/User",
+                        },
+                    },
+                },
+
+                UsersResponse: {
+                    type: "object",
+                    properties: {
+                        users: {
+                            type: "array",
+                            items: {
+                                $ref: "#/components/schemas/User",
+                            },
+                        },
+                    },
+                },
+            },
         },
 
+        // JWT required by default
         security: [
             {
-                bearerAuth: []
-            }
-        ]
+                bearerAuth: [],
+            },
+        ],
     },
 
+    // IMPORTANT FOR DOCKER
     apis: [
-        "./src/models/**/*.ts"
-    ]
+        path.join(process.cwd(), "src/models/**/*.ts"),
+    ],
 });
