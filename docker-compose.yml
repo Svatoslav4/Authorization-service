@@ -13,19 +13,16 @@ services:
     environment:
       NODE_ENV: production
 
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/authservice
-
+      DATABASE_URL: "postgresql://svyat:2006@postgres:5432/authservice?schema=public"
       REDIS_URL: redis://redis:6379
 
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
-
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
 
     depends_on:
       postgres:
         condition: service_healthy
-
       redis:
         condition: service_healthy
 
@@ -38,8 +35,8 @@ services:
     container_name: authservice-postgres
 
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: svyat
+      POSTGRES_PASSWORD: 2006
       POSTGRES_DB: authservice
 
     ports:
@@ -49,7 +46,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d authservice"]
+      test: ["CMD-SHELL", "pg_isready -U svyat -d authservice"]
       interval: 5s
       timeout: 5s
       retries: 10
