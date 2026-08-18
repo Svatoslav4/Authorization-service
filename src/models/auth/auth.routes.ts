@@ -9,12 +9,19 @@ const controller = new AuthController();
 
 /**
  * @swagger
+ * tags:
+ *   name: Authentication
+ *   description: Authentication and authorization endpoints
+ */
+
+/**
+ * @swagger
  * /auth/register:
  *   post:
  *     tags:
  *       - Authentication
- *     summary: Register new user
- *     description: Register a new account and send a verification email.
+ *     summary: Register a new user
+ *     description: Creates a new user account and returns access and refresh tokens.
  *     requestBody:
  *       required: true
  *       content:
@@ -23,11 +30,19 @@ const controller = new AuthController();
  *             $ref: '#/components/schemas/RegisterDto'
  *     responses:
  *       201:
- *         description: User registered successfully.
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthResponse'
  *       400:
- *         description: Validation error or user already exists.
+ *         description: Validation error or user already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/register", controller.register.bind(controller));
+router.post("/register",authLimiter,controller.register.bind(controller));
 
 /**
  * @swagger
@@ -35,8 +50,8 @@ router.post("/register", controller.register.bind(controller));
  *   post:
  *     tags:
  *       - Authentication
- *     summary: Login
- *     description: Login with email and password.
+ *     summary: Login user
+ *     description: Login using email and password.
  *     requestBody:
  *       required: true
  *       content:
@@ -45,9 +60,19 @@ router.post("/register", controller.register.bind(controller));
  *             $ref: '#/components/schemas/LoginDto'
  *     responses:
  *       200:
- *         description: Login successful.
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthResponse'
+ *       400:
+ *         description: Validation error
  *       401:
- *         description: Invalid credentials.
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post("/login",authLimiter,controller.login.bind(controller));
 
@@ -57,48 +82,55 @@ router.post("/login",authLimiter,controller.login.bind(controller));
  *   post:
  *     tags:
  *       - Authentication
- *     summary: Google Authentication
- *     description: Login or register using Google ID Token.
+ *     summary: Google authentication
+ *     description: Login or register a user using a Google ID token.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - token
- *             properties:
- *               token:
- *                 type: string
- *                 example: eyJhbGciOiJSUzI1NiIsImtpZCI6...
+ *             $ref: '#/components/schemas/GoogleDto'
  *     responses:
  *       200:
- *         description: Authentication successful.
+ *         description: Google authentication successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthResponse'
+ *       400:
+ *         description: Invalid Google token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Google authorization failed
  */
-router.post("/google", controller.google.bind(controller));
+router.post("/google",authLimiter,controller.google.bind(controller));
+
 /**
  * @swagger
  * /auth/logout:
  *   post:
  *     tags:
  *       - Authentication
- *     summary: Logout
- *     description: Logout the current user by removing the stored refresh token.
+ *     summary: Logout user
+ *     description: Logs out the authenticated user and removes the stored refresh token.
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Logged out successfully.
+ *         description: Successfully logged out
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Logged out successfully
+ *               $ref: '#/components/schemas/MessageResponse'
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post("/logout",authMiddleware,controller.logout.bind(controller));
 
@@ -108,8 +140,8 @@ router.post("/logout",authMiddleware,controller.logout.bind(controller));
  *   patch:
  *     tags:
  *       - Authentication
- *     summary: Change Password
- *     description: Change the current user's password. Requires JWT authentication.
+ *     summary: Change password
+ *     description: Changes the authenticated user's password. The current password must be provided.
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -120,19 +152,23 @@ router.post("/logout",authMiddleware,controller.logout.bind(controller));
  *             $ref: '#/components/schemas/ChangePasswordDto'
  *     responses:
  *       200:
- *         description: Password changed successfully.
+ *         description: Password changed successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Password changed successfully. Please login again.
+ *               $ref: '#/components/schemas/ChangePasswordResponse'
  *       400:
- *         description: Validation error or current password is incorrect.
+ *         description: Current password is incorrect or validation failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       401:
- *         description: Unauthorized.
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.patch("/change-password",authMiddleware,controller.changePassword.bind(controller));
 
