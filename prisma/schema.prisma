@@ -7,34 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  password           String?
+  name               String?
+  avatar             String?
+  googleId           String?   @unique
+  role               Role      @default(User)
+  emailVerified      Boolean   @default(false)
+  emailVerifyToken   String?
+  emailVerifyExpires DateTime?
+  refreshToken       String?
+  createdAt          DateTime  @default(now())
+}
 
 enum Role {
   User
   Admin
-}
-
-model User {
-  id String @id @default(cuid())
-
-  email String @unique
-
-  password String?
-
-  name String?
-
-  avatar String?
-
-  googleId String? @unique
-
-  role Role @default(User)
-
-  emailVerified Boolean @default(false)
-
-  emailVerifyToken String?
-
-  emailVerifyExpires DateTime?
-
-  refreshToken String?
-
-  createdAt DateTime @default(now())
 }
