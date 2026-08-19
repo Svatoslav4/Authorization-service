@@ -91,7 +91,7 @@ export class AuthController {
     async logout(req: Request, res: Response) {
         try {
 
-            const user = (req as any).user;
+            const user = (req).user;
 
             const result = await authService.logout(user.userId);
 
@@ -116,7 +116,7 @@ export class AuthController {
 
             const body = changePassword.parse(req.body);
 
-            const user = (req as any).user;
+            const user = (req).user;
 
             const result = await authService.changePassword(
                 user.userId,
