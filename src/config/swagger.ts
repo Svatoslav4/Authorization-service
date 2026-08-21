@@ -9,20 +9,20 @@ export const swaggerSpec = swaggerJsdoc({
             title: "Auth Service API",
             version: "1.0.0",
             description:
-                "REST API built with Express.js, TypeScript, Prisma, PostgreSQL, Redis, JWT Authentication and Google OAuth.",
+                "REST API for authentication and user management built with Express.js, TypeScript, Prisma, PostgreSQL, Redis, JWT and Google OAuth.",
         },
 
         servers: [
             {
                 url: "http://localhost:5000",
-                description: "Development Server",
+                description: "Development server",
             },
         ],
 
         tags: [
             {
                 name: "Authentication",
-                description: "Authentication and authorization endpoints",
+                description: "Authentication endpoints",
             },
             {
                 name: "Users",
@@ -31,51 +31,74 @@ export const swaggerSpec = swaggerJsdoc({
         ],
 
         components: {
+            // ==========================================
+            // SECURITY
+            // ==========================================
+
             securitySchemes: {
                 bearerAuth: {
                     type: "http",
                     scheme: "bearer",
                     bearerFormat: "JWT",
-                    description: "Enter JWT access token",
                 },
             },
 
+            // ==========================================
+            // SCHEMAS
+            // ==========================================
+
             schemas: {
-                // =========================
-                // AUTH DTOs
-                // =========================
+                // ------------------------------------------
+                // REGISTER
+                // ------------------------------------------
 
                 RegisterDto: {
                     type: "object",
-                    required: ["email", "password", "name"],
+                    required: [
+                        "email",
+                        "password",
+                        "name",
+                    ],
+
                     properties: {
                         email: {
                             type: "string",
                             format: "email",
-                            example: "john@gmail.com",
+                            example: "test@gmail.com",
                         },
+
                         password: {
                             type: "string",
                             format: "password",
-                            minLength: 6,
+                            minLength: 8,
                             example: "Password123",
                         },
+
                         name: {
                             type: "string",
-                            example: "John Doe",
+                            example: "Test User",
                         },
                     },
                 },
 
+                // ------------------------------------------
+                // LOGIN
+                // ------------------------------------------
+
                 LoginDto: {
                     type: "object",
-                    required: ["email", "password"],
+                    required: [
+                        "email",
+                        "password",
+                    ],
+
                     properties: {
                         email: {
                             type: "string",
                             format: "email",
-                            example: "john@gmail.com",
+                            example: "test@gmail.com",
                         },
+
                         password: {
                             type: "string",
                             format: "password",
@@ -83,127 +106,134 @@ export const swaggerSpec = swaggerJsdoc({
                         },
                     },
                 },
+
+                // ------------------------------------------
+                // GOOGLE
+                // ------------------------------------------
 
                 GoogleDto: {
                     type: "object",
                     required: ["token"],
+
                     properties: {
                         token: {
                             type: "string",
-                            description: "Google ID Token",
-                            example: "eyJhbGciOiJSUzI1NiIsImtpZCI6...",
+                            example:
+                                "eyJhbGciOiJSUzI1NiIsImtpZCI6...",
+                            description:
+                                "Google OAuth ID token",
                         },
                     },
                 },
 
+                // ------------------------------------------
+                // CHANGE PASSWORD
+                // ------------------------------------------
+
                 ChangePasswordDto: {
                     type: "object",
-                    required: ["currentPassword", "newPassword"],
+                    required: [
+                        "currentPassword",
+                        "newPassword",
+                    ],
+
                     properties: {
                         currentPassword: {
                             type: "string",
                             format: "password",
+                            minLength: 8,
                             example: "OldPassword123",
                         },
+
                         newPassword: {
                             type: "string",
                             format: "password",
-                            minLength: 6,
+                            minLength: 8,
                             example: "NewPassword123",
                         },
                     },
                 },
 
-                ForgotPasswordDto: {
-                    type: "object",
-                    required: ["email"],
-                    properties: {
-                        email: {
-                            type: "string",
-                            format: "email",
-                            example: "john@gmail.com",
-                        },
-                    },
-                },
-
-                ResetPasswordDto: {
-                    type: "object",
-                    required: ["token", "password"],
-                    properties: {
-                        token: {
-                            type: "string",
-                            example: "reset_token",
-                        },
-                        password: {
-                            type: "string",
-                            format: "password",
-                            example: "NewPassword123",
-                        },
-                    },
-                },
-
-                // =========================
+                // ------------------------------------------
                 // USER
-                // =========================
+                // ------------------------------------------
 
                 User: {
                     type: "object",
+
                     properties: {
                         id: {
                             type: "string",
                             example: "cmabc123456",
                         },
+
                         email: {
                             type: "string",
                             format: "email",
-                            example: "john@gmail.com",
+                            example: "test@gmail.com",
                         },
+
                         name: {
                             type: "string",
-                            example: "John Doe",
+                            example: "Test User",
                         },
+
                         avatar: {
                             type: "string",
                             nullable: true,
-                            example: "https://example.com/avatar.png",
+                            example:
+                                "https://example.com/avatar.png",
                         },
+
                         googleId: {
                             type: "string",
                             nullable: true,
-                            example: "109876543210987654321",
+                            example:
+                                "109876543210987654321",
                         },
+
                         role: {
                             type: "string",
-                            enum: ["User", "Admin"],
+                            enum: [
+                                "User",
+                                "Admin",
+                            ],
                             example: "User",
                         },
+
                         emailVerified: {
                             type: "boolean",
                             example: true,
                         },
+
                         createdAt: {
                             type: "string",
                             format: "date-time",
-                            example: "2026-08-15T10:00:00.000Z",
+                            example:
+                                "2026-08-15T10:00:00.000Z",
                         },
                     },
                 },
 
-                // =========================
-                // RESPONSES
-                // =========================
+                // ------------------------------------------
+                // AUTH RESPONSE
+                // ------------------------------------------
 
                 AuthResponse: {
                     type: "object",
+
                     properties: {
                         user: {
-                            $ref: "#/components/schemas/User",
+                            $ref:
+                                "#/components/schemas/User",
                         },
+
                         accessToken: {
                             type: "string",
                             example:
                                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                         },
+
                         refreshToken: {
                             type: "string",
                             example:
@@ -212,8 +242,47 @@ export const swaggerSpec = swaggerJsdoc({
                     },
                 },
 
+                // ------------------------------------------
+                // USER RESPONSE
+                // ------------------------------------------
+
+                UserResponse: {
+                    type: "object",
+
+                    properties: {
+                        user: {
+                            $ref:
+                                "#/components/schemas/User",
+                        },
+                    },
+                },
+
+                // ------------------------------------------
+                // USERS RESPONSE
+                // ------------------------------------------
+
+                UsersResponse: {
+                    type: "object",
+
+                    properties: {
+                        users: {
+                            type: "array",
+
+                            items: {
+                                $ref:
+                                    "#/components/schemas/User",
+                            },
+                        },
+                    },
+                },
+
+                // ------------------------------------------
+                // MESSAGE
+                // ------------------------------------------
+
                 MessageResponse: {
                     type: "object",
+
                     properties: {
                         message: {
                             type: "string",
@@ -222,55 +291,28 @@ export const swaggerSpec = swaggerJsdoc({
                     },
                 },
 
-                ChangePasswordResponse: {
+                // ------------------------------------------
+                // ERROR
+                // ------------------------------------------
+
+                ErrorResponse: {
                     type: "object",
+
                     properties: {
                         message: {
                             type: "string",
                             example:
-                                "Password changed successfully. Please login again.",
-                        },
-                    },
-                },
-
-                ErrorResponse: {
-                    type: "object",
-                    properties: {
-                        message: {
-                            type: "string",
-                            example: "Invalid credentials",
-                        },
-                    },
-                },
-
-                // =========================
-                // USER RESPONSES
-                // =========================
-
-                UserResponse: {
-                    type: "object",
-                    properties: {
-                        user: {
-                            $ref: "#/components/schemas/User",
-                        },
-                    },
-                },
-
-                UsersResponse: {
-                    type: "object",
-                    properties: {
-                        users: {
-                            type: "array",
-                            items: {
-                                $ref: "#/components/schemas/User",
-                            },
+                                "Invalid credentials",
                         },
                     },
                 },
             },
         },
 
-        // JWT required by default
+        // ==========================================
+        // DEFAULT SECURITY
+        // ==========================================
+
         security: [
             {
                 bearerAuth: [],
@@ -278,8 +320,14 @@ export const swaggerSpec = swaggerJsdoc({
         ],
     },
 
-    // IMPORTANT FOR DOCKER
+    // ==========================================
+    // ROUTES
+    // ==========================================
+
     apis: [
-        path.join(process.cwd(), "src/models/**/*.ts"),
+        path.join(
+            process.cwd(),
+            "src/models/**/*.ts"
+        ),
     ],
 });

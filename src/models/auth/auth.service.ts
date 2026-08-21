@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { User } from "@/types/user.types";
 import { prisma } from "../../prisma/client";
 import { comparePassword, hashPassword } from "../../utils/bcrypt";
 import { GoogleTokenVerify } from "../../utils/google";
@@ -26,7 +26,7 @@ export class AuthService {
     };
   }
 
-  private sanitizeUser(user: Prisma.UserGetPayload<{}>) {
+  private sanitizeUser(user: User) {
     const { password, refreshToken, ...safeUser } = user;
 
     return safeUser;
