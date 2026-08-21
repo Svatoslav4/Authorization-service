@@ -1,33 +1,31 @@
 # 🔐 Auth Service
 
-![Node.js](https://img.shields.io/badge/Node.js-22.x-green)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
-![Express.js](https://img.shields.io/badge/Express.js-Backend-black)
-![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791)
-![JWT](https://img.shields.io/badge/JWT-Authentication-orange)
-![Google OAuth](https://img.shields.io/badge/Google-OAuth2-red)
-![License](https://img.shields.io/badge/License-MIT-yellow)
-
 Modern authentication service built with **Express.js**, **TypeScript**, **Prisma**, **PostgreSQL**, **JWT**, and **Google OAuth**.
+
+The project provides a secure authentication system with user registration, login, JWT access and refresh tokens, Google OAuth authentication, request validation, protected routes, Swagger documentation, and unit testing.
 
 ---
 
 # 🚀 Features
 
-- ✅ User Registration
-- ✅ User Login
-- ✅ JWT Authentication
-- ✅ Access Token
-- ✅ Refresh Token
-- ✅ Google OAuth Authentication
-- ✅ Password Hashing (bcrypt)
-- ✅ Request Validation (Zod)
-- ✅ Prisma ORM
-- ✅ PostgreSQL
-- ✅ Swagger API Documentation
-- ✅ Layered Architecture
-- ✅ Unit Testing (Jest)
+* ✅ User Registration
+* ✅ User Login
+* ✅ JWT Authentication
+* ✅ Access Token
+* ✅ Refresh Token
+* ✅ Google OAuth 2.0 Authentication
+* ✅ Password Hashing with bcrypt
+* ✅ Request Validation with Zod
+* ✅ Protected Routes
+* ✅ User Management
+* ✅ Prisma ORM
+* ✅ PostgreSQL Database
+* ✅ Swagger API Documentation
+* ✅ Modular Architecture
+* ✅ Repository Pattern
+* ✅ Unit Testing with Jest
+* ✅ Environment Variables
+* ✅ TypeScript
 
 ---
 
@@ -35,36 +33,47 @@ Modern authentication service built with **Express.js**, **TypeScript**, **Prism
 
 ## Backend
 
-- Node.js
-- Express.js
-- TypeScript
+* Node.js
+* Express.js
+* TypeScript
 
 ## Database
 
-- PostgreSQL
-- Prisma ORM
+* PostgreSQL
+* Prisma ORM
 
-## Authentication
+## Authentication & Security
 
-- JWT
-- Google OAuth 2.0
-- bcrypt
+* JWT
+* Google OAuth 2.0
+* bcrypt
 
 ## Validation
 
-- Zod
+* Zod
 
 ## Documentation
 
-- Swagger UI
+* Swagger / OpenAPI
 
 ## Testing
 
-- Jest
+* Jest
+
+## Development Tools
+
+* Git
+* GitHub
+* npm
+* Prisma Studio
 
 ---
 
-# 📁 Project Structure
+# 🏗 Architecture
+
+The project follows a **modular architecture**, where each business domain is isolated into its own module.
+
+This structure makes the application easier to maintain, test, extend, and scale.
 
 ```text
 src
@@ -76,6 +85,7 @@ src
 │   └── auth.middleware.ts
 │
 ├── models
+│   │
 │   ├── auth
 │   │   ├── auth.controller.ts
 │   │   ├── auth.routes.ts
@@ -102,45 +112,132 @@ src
 │
 ├── app.ts
 └── server.ts
+```
+
+## 📦 Modules
+
+### 🔐 Auth Module
+
+Responsible for authentication functionality:
+
+* User registration
+* User login
+* JWT authentication
+* Access tokens
+* Refresh tokens
+* Google OAuth authentication
+* Request validation
+
+### 👤 User Module
+
+Responsible for user-related functionality:
+
+* User management
+* User data retrieval
+* User repository
+* Protected user endpoints
+
+## 🎯 Architecture Principles
+
+* 📦 Feature-based modular structure
+* 🔐 Separation of business domains
+* 🧩 Independent modules
+* 🔄 Reusable components
+* 🧪 Easier testing
+* 🛠 Easier maintenance
+* 📈 Scalable architecture
+
+---
+
+# 📁 Project Structure
+
+```text
+AuthService
 │
-tests
+├── src
+│   │
+│   ├── config
+│   │   └── swagger.ts
+│   │
+│   ├── middlewares
+│   │   └── auth.middleware.ts
+│   │
+│   ├── models
+│   │   │
+│   │   ├── auth
+│   │   │   ├── auth.controller.ts
+│   │   │   ├── auth.routes.ts
+│   │   │   ├── auth.service.ts
+│   │   │   └── auth.validation.ts
+│   │   │
+│   │   └── user
+│   │       ├── user.controller.ts
+│   │       ├── user.repository.ts
+│   │       ├── user.routes.ts
+│   │       └── user.service.ts
+│   │
+│   ├── prisma
+│   │   └── client.ts
+│   │
+│   ├── types
+│   │   ├── auth.types.ts
+│   │   └── index.d.ts
+│   │
+│   ├── utils
+│   │   ├── bcrypt.ts
+│   │   ├── google.ts
+│   │   └── jwt.ts
+│   │
+│   ├── app.ts
+│   └── server.ts
 │
-├── auth
-│   ├── auth.controller.test.ts
-│   ├── auth.middleware.test.ts
-│   ├── auth.routes.test.ts
-│   ├── auth.service.test.ts
-│   └── auth.validation.test.ts
+├── tests
+│   │
+│   ├── auth
+│   │   ├── auth.controller.test.ts
+│   │   ├── auth.middleware.test.ts
+│   │   ├── auth.routes.test.ts
+│   │   ├── auth.service.test.ts
+│   │   └── auth.validation.test.ts
+│   │
+│   ├── user
+│   │   ├── user.controller.test.ts
+│   │   ├── user.repository.test.ts
+│   │   ├── user.routes.test.ts
+│   │   └── user.service.test.ts
+│   │
+│   └── utils
+│       ├── bcrypt.test.ts
+│       ├── google.test.ts
+│       └── jwt.test.ts
 │
-├── user
-│   ├── user.controller.test.ts
-│   ├── user.repository.test.ts
-│   ├── user.routes.test.ts
-│   └── user.service.test.ts
+├── prisma
+│   └── schema.prisma
 │
-└── utils
-    ├── bcrypt.test.ts
-    ├── google.test.ts
-    └── jwt.test.ts
+├── .env.example
+├── .gitignore
+├── package.json
+├── tsconfig.json
+└── README.md
 ```
 
 ---
 
-# ⚙ Installation
+# ⚙️ Installation
 
-Clone the repository
+## 1. Clone the repository
 
 ```bash
-git clone https://github.com/Svatoslav4/AuthService.git
+git clone https://github.com/Svatoslav44/AuthService.git
 ```
 
-Go to the project
+## 2. Go to the project directory
 
 ```bash
 cd AuthService
 ```
 
-Install dependencies
+## 3. Install dependencies
 
 ```bash
 npm install
@@ -150,7 +247,7 @@ npm install
 
 # 🔧 Environment Variables
 
-Create a `.env` file
+Create a `.env` file in the root directory:
 
 ```env
 DATABASE_URL="postgresql://username:password@localhost:5432/authservice"
@@ -164,40 +261,27 @@ GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 ```
 
----
-
-# ▶ Running
-
-Development
-
-```bash
-npm run dev
-```
-
-Production
-
-```bash
-npm run build
-npm start
-```
+> ⚠️ Never commit your `.env` file to GitHub.
 
 ---
 
-# 🗄 Database
+# 🗄️ Database Setup
 
-Generate Prisma Client
+This project uses **PostgreSQL** with **Prisma ORM**.
+
+## Generate Prisma Client
 
 ```bash
 npx prisma generate
 ```
 
-Run Migrations
+## Run database migrations
 
 ```bash
 npx prisma migrate dev
 ```
 
-Open Prisma Studio
+## Open Prisma Studio
 
 ```bash
 npx prisma studio
@@ -205,112 +289,275 @@ npx prisma studio
 
 ---
 
-# 🧪 Testing
+# ▶️ Running the Application
 
-Run all tests
+## Development
 
 ```bash
-npm test
+npm run dev
 ```
 
-Run tests in watch mode
+The server will start on:
 
-```bash
-npm run test:watch
+```text
+http://localhost:5000
 ```
 
-Generate test coverage
+## Production
+
+Build the project:
 
 ```bash
-npm run test:coverage
+npm run build
+```
+
+Start the production server:
+
+```bash
+npm start
 ```
 
 ---
 
 # 📖 API Documentation
 
-After starting the server, Swagger is available at:
+Swagger / OpenAPI documentation is available after starting the server:
 
 ```text
 http://localhost:5000/docs
 ```
 
+Swagger provides interactive documentation for the available API endpoints.
+
 ---
 
 # 🔑 Authentication Flow
 
-1. Register
-2. Login
-3. Receive JWT Access Token
-4. Access Protected Routes
-5. Authenticate with Google OAuth
+## Standard Authentication
+
+```text
+Register
+   │
+   ▼
+Login
+   │
+   ▼
+Access Token + Refresh Token
+   │
+   ▼
+Protected API Request
+   │
+   ▼
+JWT Authentication
+```
+
+## Google OAuth
+
+```text
+Google OAuth
+     │
+     ▼
+Google Token Verification
+     │
+     ▼
+User Authentication
+     │
+     ▼
+JWT Access + Refresh Tokens
+```
 
 ---
 
 # 📌 API Endpoints
 
-## Authentication
+## 🔐 Authentication
 
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| POST | `/auth/register` | Register User |
-| POST | `/auth/login` | Login |
-| POST | `/auth/google` | Google Authentication |
+| Method | Endpoint         | Description              |
+| ------ | ---------------- | ------------------------ |
+| POST   | `/auth/register` | Register a new user      |
+| POST   | `/auth/login`    | Login user               |
+| POST   | `/auth/google`   | Authenticate with Google |
 
 ---
 
-## Users
+## 👤 Users
 
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| GET | `/users/me` | Get Current User |
+| Method | Endpoint    | Description                    |
+| ------ | ----------- | ------------------------------ |
+| GET    | `/users/me` | Get current authenticated user |
 
 ---
 
 # 🔒 Security
 
-- JWT Authentication
-- Password Hashing with bcrypt
-- Google OAuth 2.0
-- Zod Validation
-- Protected Routes
+The project implements several security mechanisms:
+
+* 🔐 JWT Authentication
+* 🔑 Access and Refresh Tokens
+* 🔒 Protected Routes
+* 🔐 Password Hashing with bcrypt
+* 🔎 Request Validation with Zod
+* 🔑 Google OAuth 2.0
+* 🌐 Environment Variables for Sensitive Configuration
+* 🚫 Sensitive User Fields Excluded from API Responses
 
 ---
 
-# 📸 Swagger Screenshots
+# 🧪 Testing
 
-## Authentication Endpoints
+The project uses **Jest** for unit testing.
 
-<img width="1472" alt="Authentication Endpoints" src="https://github.com/user-attachments/assets/3576860e-48bb-460d-a94f-fcaeab73aef4"/>
+## Run all tests
+
+```bash
+npm test
+```
+
+## Run tests in watch mode
+
+```bash
+npm run test:watch
+```
+
+## Generate test coverage
+
+```bash
+npm run test:coverage
+```
+
+Tests cover:
+
+* Authentication
+* Controllers
+* Services
+* Routes
+* Middleware
+* Validation
+* Repository
+* JWT utilities
+* bcrypt utilities
+* Google authentication utilities
 
 ---
 
-## Google Authentication
+# 📊 Testing Structure
 
-<img width="1432" alt="Google Authentication" src="https://github.com/user-attachments/assets/2634a66a-3a21-49a9-8e3a-3041ff169387"/>
+```text
+Tests
+│
+├── Auth
+│   ├── Controller
+│   ├── Service
+│   ├── Routes
+│   ├── Middleware
+│   └── Validation
+│
+├── User
+│   ├── Controller
+│   ├── Service
+│   ├── Repository
+│   └── Routes
+│
+└── Utils
+    ├── JWT
+    ├── bcrypt
+    └── Google OAuth
+```
 
 ---
 
-## User Endpoints
+# 🔄 Example Authentication Request
 
-<img width="1429" alt="User Endpoints" src="https://github.com/user-attachments/assets/8eb12b8a-e5cc-45ce-8661-2f46d8806995"/>
+## Register
+
+```http
+POST /auth/register
+Content-Type: application/json
+```
+
+Example request:
+
+```json
+{
+  "email": "test@gmail.com",
+  "password": "StrongPassword123",
+  "name": "Test User"
+}
+```
+
+---
+
+## Login
+
+```http
+POST /auth/login
+Content-Type: application/json
+```
+
+Example request:
+
+```json
+{
+  "email": "test@gmail.com",
+  "password": "StrongPassword123"
+}
+```
+
+---
+
+# 🧠 What This Project Demonstrates
+
+This project demonstrates practical backend development skills including:
+
+* REST API Development
+* Authentication and Authorization
+* JWT Token Management
+* OAuth 2.0 Integration
+* PostgreSQL Database
+* Prisma ORM
+* Modular Architecture
+* Repository Pattern
+* Middleware Development
+* Input Validation
+* Password Security
+* Unit Testing
+* API Documentation
+* TypeScript Development
+
+---
+
+# 🚀 Future Improvements
+
+Planned improvements:
+
+* [ ] Password Reset
+* [ ] Email Verification
+* [ ] Redis Cache
+* [ ] Rate Limiting
+* [ ] Docker
+* [ ] Docker Compose
+* [ ] CI/CD with GitHub Actions
+* [ ] Integration Testing
+* [ ] Refresh Token Rotation
+* [ ] Account Lockout Protection
+* [ ] Production Deployment
 
 ---
 
 # 👨‍💻 Author
 
-**Svyat Sakati**
+## Svyat Sakati
 
-- **GitHub:** https://github.com/Svatoslav4
-- **LinkedIn:** https://www.linkedin.com/in/sviatoslav-kushey-34388734a/
+Junior Backend Developer focused on **Node.js, TypeScript, Express.js and NestJS**.
+
+* **GitHub:** https://github.com/Svatoslav44
+* **LinkedIn:** https://www.linkedin.com/in/sviatoslav-kushey-34388734a/
 
 ---
 
-# ⭐ Future Improvements
-- Password Reset
-- Redis Cache
-- Docker
-- CI/CD (GitHub Actions)
+# ⭐ Support
+
+If you find this project useful, consider giving it a ⭐ on GitHub.
 
 ---
 
