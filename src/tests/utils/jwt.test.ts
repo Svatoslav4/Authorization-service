@@ -31,17 +31,17 @@ describe("JWT Utils", () => {
       expect(jwt.sign).toHaveBeenCalledWith(
         { userId },
         process.env.JWT_ACCESS_SECRET,
-        { expiresIn: "15w" }
+        { expiresIn: "15m" }
       );
     });
 
-    it("should set expiration to 15 weeks", () => {
+    it("should set expiration to 15 minutes", () => {
       (jwt.sign as jest.Mock).mockReturnValue("token");
 
       generateAccessToken(userId);
 
       const callArgs = (jwt.sign as jest.Mock).mock.calls[0];
-      expect(callArgs[2].expiresIn).toBe("15w");
+      expect(callArgs[2].expiresIn).toBe("15m");
     });
   });
 
