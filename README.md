@@ -153,7 +153,12 @@ Responsible for user-related functionality:
 
 ```text
 AuthService
-│
+
+├── .github
+├── .vscode
+├── dist
+├── node_modules
+├── prisma
 ├── src
 │   │
 │   ├── config
@@ -182,6 +187,7 @@ AuthService
 │   ├── types
 │   │   ├── auth.types.ts
 │   │   └── index.d.ts
+│   │   └── user.types.ts
 │   │
 │   ├── utils
 │   │   ├── bcrypt.ts
@@ -190,7 +196,10 @@ AuthService
 │   │
 │   ├── app.ts
 │   └── server.ts
-│
+├── prisma
+│   ├── client.ts
+├── redis
+│   ├── redis.ts
 ├── tests
 │   │
 │   ├── auth
@@ -213,8 +222,14 @@ AuthService
 │
 ├── prisma
 │   └── schema.prisma
-│
-├── .env.example
+├──  jest.config.js
+├── .prettierignore
+├── .prettierrc
+├── .dockerignore
+├── docker-compose.yml
+├── Dockerfile
+├── LICENSE
+├── .env
 ├── .gitignore
 ├── package.json
 ├── tsconfig.json
@@ -530,17 +545,17 @@ This project demonstrates practical backend development skills including:
 
 Planned improvements:
 
-* [ ] Password Reset
-* [ ] Email Verification
-* [ ] Redis Cache
-* [ ] Rate Limiting
-* [ ] Docker
-* [ ] Docker Compose
-* [ ] CI/CD with GitHub Actions
-* [ ] Integration Testing
-* [ ] Refresh Token Rotation
-* [ ] Account Lockout Protection
-* [ ] Production Deployment
+Password Reset
+ Email Verification
+ Redis Cache
+ Rate Limiting
+ Docker
+ Docker Compose
+ CI/CD with GitHub Actions
+ Integration Testing
+ Refresh Token Rotation
+ Account Lockout Protection
+ Production Deployment
 
 ---
 
