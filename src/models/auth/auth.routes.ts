@@ -156,7 +156,7 @@ router.post("/logout",authMiddleware,controller.logout.bind(controller));
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ChangePasswordResponse'
+ *               $ref: '#/components/schemas/MessageResponse'
  *       400:
  *         description: Current password is incorrect or validation failed
  *         content:
